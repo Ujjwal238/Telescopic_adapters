@@ -34,7 +34,7 @@
 **Telescopic Adapters** is a Parameter-Efficient Fine-Tuning (PEFT) framework for adapting Vision Language Segmentation Models (VLSMs) to medical imaging domains. Instead of applying uniform adapter dimensions across all transformer layers, we introduce a **depth-aware telescopic scaling** strategy: adapter capacity grows progressively from shallow to deep layers, mirroring the coarse-to-fine representational hierarchy of transformers.
 
 <div align="center">
-  <img src="img/Image_Transformer.pdf" alt="Architecture Overview" width="90%">
+  <img src="img/Image_Transformer.jpg" alt="Architecture Overview" width="90%">
   <p><em>Overview of the telescopic adaptation framework: (a) modified CLIPSeg architecture, (b) adapter placement within encoder blocks, (c) adapter formulation with learnable scalar α, (d) progressive dimension allocation across vision, text, and conditional branches.</em></p>
 </div>
 
@@ -45,7 +45,7 @@
 - 🏥 Deployable in resource-constrained clinical environments
 
 <div align="center">
-  <img src="img/plot-7.pdf" alt="Performance vs Parameter Efficiency" width="60%">
+  <img src="img/plot-7.jpg" alt="Performance vs Parameter Efficiency" width="60%">
   <p><em>Performance vs. Parameter Efficiency. Telescopic Adapters sit on the Pareto front — best PEFT performance at the lowest parameter cost.</em></p>
 </div>
 
