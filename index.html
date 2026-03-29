@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Telescopic Adapters for Efficient Fine-tuning of Vision Language Models in Medical Imaging - WACV 2026">
+  <title>Telescopic Adapters — WACV 2026</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f5f2ec;
+      --bg-card: #faf8f4;
+      --ink: #1a1a18;
+      --ink-soft: #4a4a46;
+      --ink-faint: #9a9a94;
+      --accent: #c0392b;
+      --accent-warm: #e67e22;
+      --accent-light: #fef0ee;
+      --border: #ddd9d0;
+      --border-strong: #c5c0b5;
+      --mono: 'DM Mono', monospace;
+      --serif: 'DM Serif Display', serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245,242,236,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .hero {
+      padding: 7rem 2rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .venue-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: white;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.85rem;
+      border-radius: 2px;
+      margin-bottom: 1.8rem;
+    }
+
+    .venue-pill .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    h1.paper-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      line-height: 1.18;
+      color: var(--ink);
+      max-width: 800px;
+      margin-bottom: 2.5rem;
+    }
+
+    h1.paper-title em { color: var(--accent); font-style: italic; }
+
+    .authors-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .author { font-size: 1rem; color: var(--ink); font-weight: 500; }
+    .author sup { font-size: 0.65em; color: var(--accent); font-family: var(--mono); }
+    .affiliation { font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 2.5rem; }
+
+    .links-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 4rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1.5px solid transparent;
+    }
+
+    .btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+    .btn-primary:hover { background: var(--accent); border-color: var(--accent); }
+    .btn-outline { background: transparent; color: var(--ink); border-color: var(--border-strong); }
+    .btn-outline:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+    .btn-accent { background: var(--accent); color: white; border-color: var(--accent); }
+    .btn-accent:hover { background: #a93226; border-color: #a93226; }
+    .btn svg { width: 15px; height: 15px; }
+
+    .section { max-width: 1100px; margin: 0 auto; padding: 3.5rem 2rem; }
+    .section + .section { border-top: 1px solid var(--border); }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    h2.section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      line-height: 1.25;
+    }
+
+    p { color: var(--ink-soft); margin-bottom: 1rem; }
+
+    .abstract-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 4px;
+      padding: 2rem 2.5rem;
+      font-size: 0.97rem;
+      line-height: 1.8;
+      color: var(--ink-soft);
+    }
+
+    .figure-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+
+    .figure-wrap img { width: 100%; display: block; }
+
+    .figure-caption {
+      padding: 1rem 1.5rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .figure-caption strong { color: var(--ink); font-weight: 600; }
+
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+
+    .highlight-item {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .highlight-num { font-family: var(--serif); font-size: 2.2rem; color: var(--accent); line-height: 1; }
+    .highlight-label { font-size: 0.78rem; color: var(--ink-soft); line-height: 1.4; }
+
+    /* ── LIGHT THEME BIBTEX ── */
+    .bibtex-block {
+      background: var(--bg-card);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.8;
+      padding: 1.5rem 2rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-strong);
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .bibtex-block .key { color: #8e44ad; }   /* Purple for keys */
+    .bibtex-block .val { color: #2980b9; }   /* Blue for values */
+    .bibtex-block .punc { color: #7f8c8d; }  /* Grey for punctuation */
+    .bibtex-block .tag { color: #c0392b; }   /* Red for the BibTeX type */
+
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--bg);
+      color: var(--ink-soft);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.3rem 0.7rem;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    footer a { color: var(--ink-soft); }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 800px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.15s; }
+    .fade-in:nth-child(3) { animation-delay: 0.25s; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <span class="nav-brand">Telescopic Adapters</span>
+  <ul class="nav-links">
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#method">Method</a></li>
+    <li><a href="#bibtex">BibTeX</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="fade-in">
+    <div class="venue-pill">
+      <span class="dot"></span>
+      WACV 2026 — Pages 7605–7615
+    </div>
+  </div>
+
+  <h1 class="paper-title fade-in">
+    Improvise, Adapt, Overcome —<br>
+    <em>Telescopic Adapters</em> for Efficient Fine-tuning<br>
+    of Vision Language Models in Medical Imaging
+  </h1>
+
+  <div class="authors-grid fade-in">
+    <span class="author">Ujjwal Mishra<sup>1</sup></span>
+    <span class="author">Vinita Shukla<sup>1</sup></span>
+    <span class="author">Praful Hambarde<sup>1</sup></span>
+    <span class="author">Amit Shukla<sup>1</sup></span>
+  </div>
+  <p class="affiliation fade-in">
+    <sup>1</sup>Centre for Artificial Intelligence and Robotics, Indian Institute of Technology Mandi, India
+  </p>
+
+  <div class="links-row fade-in">
+    <a class="btn btn-primary" href="https://arxiv.org/abs/2512.13855" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      arXiv Paper
+    </a>
+    <a class="btn btn-outline" href="https://openaccess.thecvf.com/content/WACV2026/html/Mishra_Improvise_Adapt_Overcome_--_Telescopic_Adapters_for_Efficient_Fine-tuning_of_WACV_2026_paper.html" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      CVF Open Access
+    </a>
+    <a class="btn btn-outline" href="#bibtex">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Cite
+    </a>
+    <!-- remove this link when code live -->
+    <a class="btn btn-accent" href="demo.html" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        Live Demo
+      </a>
+  </div>
+
+  <div class="highlights fade-in">
+    <div class="highlight-item">
+      <div class="highlight-num">613k</div>
+      <div class="highlight-label">Trainable parameters — only 0.4% of CLIPSeg's 150M</div>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-num">244×</div>
+      <div class="highlight-label">Fewer parameters than end-to-end fine-tuning</div>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-num">SOTA</div>
+      <div class="highlight-label">Best PEFT performance across five medical benchmarks</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="abstract">
+  <div class="section-label">Abstract</div>
+  <div class="abstract-card">
+    Adapting Vision Language Segmentation Models (VLSMs) to medical imaging domains requires significant computational overhead when using conventional fine-tuning approaches. We introduce <strong>Telescopic Adapters</strong>, a novel PEFT framework that employs depth-aware scaling to progressively increase adapter capacity from shallow to deep transformer layers. Using only 613k trainable parameters — 244× fewer than end-to-end fine-tuning — Telescopic Adapters achieve superior performance across five diverse medical datasets spanning polyp segmentation, skin lesion detection, and breast ultrasound imaging.
+  </div>
+</div>
+
+<div class="section" id="method">
+  <div class="section-label">Method</div>
+  <h2 class="section-title">Telescopic Adapter Framework</h2>
+
+  <p>The core insight is a <em>depth-aware telescopic scaling</em> strategy: rather than applying uniform adapter widths, we assign smaller bottleneck dimensions to early layers and progressively increase capacity toward deeper layers.</p>
+
+  <div class="figure-wrap">
+    <img src="img/Image_Transformer.jpg" alt="Overview architecture" onerror="this.style.background='#eee'; this.style.minHeight='220px';">
+    <div class="figure-caption">
+      <strong>Figure 1.</strong> Overview of the proposed telescopic adaptation framework highlighting depth-aware dimension allocation across vision and text branches.
+    </div>
+  </div>
+</div>
+
+<div class="section" id="bibtex">
+  <div class="section-label">Citation</div>
+  <h2 class="section-title">BibTeX</h2>
+  <div class="bibtex-block" id="bibtex-code">
+    <button class="copy-btn" onclick="copyBibtex()">Copy</button>
+<pre><span class="punc">@</span><span class="tag">InProceedings</span><span class="punc">{</span>Mishra_2026_WACV<span class="punc">,</span>
+  <span class="key">author</span>    <span class="punc">= {</span><span class="val">Mishra, Ujjwal and Shukla, Vinita and
+               Hambarde, Praful and Shukla, Amit</span><span class="punc">},</span>
+  <span class="key">title</span>     <span class="punc">= {</span><span class="val">Improvise, Adapt, Overcome -- Telescopic Adapters
+               for Efficient Fine-tuning of Vision Language
+               Models in Medical Imaging</span><span class="punc">},</span>
+  <span class="key">booktitle</span> <span class="punc">= {</span><span class="val">Proceedings of the IEEE/CVF Winter Conference
+               on Applications of Computer Vision (WACV)</span><span class="punc">},</span>
+  <span class="key">month</span>     <span class="punc">= {</span><span class="val">March</span><span class="punc">},</span>
+  <span class="key">year</span>      <span class="punc">= {</span><span class="val">2026</span><span class="punc">},</span>
+  <span class="key">pages</span>     <span class="punc">= {</span><span class="val">7605--7615</span><span class="punc">}</span>
+<span class="punc">}</span></pre>
+  </div>
+</div>
+
+<footer>
+  <p>IIT Mandi, India &nbsp;·&nbsp; WACV 2026</p>
+</footer>
+
+<script>
+function copyBibtex() {
+  const raw = `@inproceedings{mishra2026improvise,
+  title={Improvise, Adapt, Overcome--Telescopic Adapters for Efficient Fine-tuning of Vision Language Models in Medical Imaging},
+  author={Mishra, Ujjwal and Shukla, Vinita and Hambarde, Praful and Shukla, Amit},
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={7605--7615},
+  year={2026}
+}`;
+  navigator.clipboard.writeText(raw).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.section').forEach(s => {
+  s.style.opacity = '0';
+  s.style.transform = 'translateY(20px)';
+  s.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(s);
+});
+</script>
+
+</body>
+</html>
