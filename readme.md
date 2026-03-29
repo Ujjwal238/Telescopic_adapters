@@ -149,8 +149,5 @@ Our model builds upon [CLIPSeg](https://github.com/timojl/clipseg). We also than
 
 ***For any questions, please feel free to [contact us.](mailto:ujjwalmishra238@gmail.com)***
 
----
 
-## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Ujjwal238/Telescopic_adapters&type=Date)](https://www.star-history.com/#Ujjwal238/Telescopic_adapters&Date)
